@@ -2,8 +2,9 @@
   <div class="password-generator">
       <password-display v-bind:password="password" v-bind:key="index" v-for="(password, index) in passwords" />
       <password-input name="Length" v-model="options.length" />
-      <password-input name="Special Characters" v-model="options.specialChars" />
-      <password-input name="Upper Case" v-model="options.capitals" />
+      <password-input name="Syllables" v-model="options.syllables" />
+      <password-input name="Frequency" v-model="options.frequency" />
+      <password-input name="Word Length" v-model="options.word_length" />
       <div>number of words in corpus: {{words.length}}</div>
       <div>minimum length: {{min_length}}</div>
       <div>maximum length: {{max_length}}</div>
@@ -29,8 +30,8 @@ export default {
   data: function () {
     return {
       number_of_passwords: 5,
-      options: { length: 4, specialChars: 50, capitals: 75 },
-      words_db: {},
+      options: { length: 4, syllables: 3, frequency: 10, word_length: 8 },
+      words_db: [],
 
       min_length: 0,
       max_length: 0,
@@ -45,11 +46,14 @@ export default {
   computed: {
     words: function () {
       var self = this;
-      if (Object.keys(self.words_db).length === 0) {
-        return [];
-      } else {
-        return Object.keys(self.words_db);
-      }
+      var result = _(self.words_db)
+          .filter(r => r.frequency <= self.options.frequency)
+          .filter(r => r.length <= self.options.word_length)
+          .filter(r => r.syllables <= self.options.syllables)
+          .map(r => r.word)
+          .value();
+
+      return result;
     },
     passwords: function () {
       var self = this
@@ -80,16 +84,14 @@ export default {
       this.max_syllables = maxValues[1]
       this.max_frequency = maxValues[2]
 
-      this.words_db = _.reduce(lines,
-                               function (a, e) {
+      this.words_db = _.map(lines,
+                            function (e) {
                                  var values = e.split(' ');
-                                 a[values[0]] = {
-                                   length: values[1],
-                                   syllables: values[2],
-                                   frequency: values[3]}
-                                 return a
-        },
-        {})
+                                 return { word: values[0],
+                                          length: values[1],
+                                          syllables: values[2],
+                                          frequency: values[3] }
+                               });
     })
   }
 }
