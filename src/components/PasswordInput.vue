@@ -1,13 +1,13 @@
 <template>
   <div class="password-input">
     <label>{{name}}</label>
-    <input type="number" min="0" max="100" v-bind:value="value" v-on:input="onInput">
+    <input type="number" v-bind:value="value" v-bind:min="min" v-bind:max="max" v-on:input="onInput">
   </div>
 </template>
 
 <script>
 export default {
-  props: ['name', 'value'],
+  props: ['name', 'min', 'max', 'value'],
   methods: {
     onInput: function (e) {
       let value = parseInt(e.target.value)

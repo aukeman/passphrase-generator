@@ -1,10 +1,10 @@
 <template>
   <div class="password-generator">
       <password-display v-bind:password="password" v-bind:key="index" v-for="(password, index) in passwords" />
-      <password-input name="Length" v-model="options.length" />
-      <password-input name="Syllables" v-model="options.syllables" />
-      <password-input name="Frequency" v-model="options.frequency" />
-      <password-input name="Word Length" v-model="options.word_length" />
+      <password-input name="Length" min="1" max="6" v-model="options.length" />
+      <password-input name="Syllables" v-bind:min="min_syllables" v-bind:max="max_syllables" v-model="options.syllables" />
+      <password-input name="Frequency" v-bind:min="min_frequency" v-bind:max="max_frequency" v-model="options.frequency" />
+      <password-input name="Word Length" v-bind:min="min_length" v-bind:max="max_length" v-model="options.word_length" />
       <div>number of words in corpus: {{words.length}}</div>
       <div>minimum length: {{min_length}}</div>
       <div>maximum length: {{max_length}}</div>
